@@ -2,16 +2,30 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Motor;
 use Illuminate\Http\Request;
+use Intervention\Image\ImageManager;
+use Intervention\Image\Drivers\Gd\Driver;
+use Intervention\Image\Laravel\Facades\Image;
 
 class MotorController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
+        $query = Motor::all();
+
+        // Search
+        if ($request->filled('search')) {
+            $query->where('motor_merk', 'like', "%{$request->search}%");
+        }
+
+        // Pagination
+        $motor = $query->paginate(10);
+
+        return view('motor.index', compact('motor'));
     }
 
     /**
@@ -19,7 +33,7 @@ class MotorController extends Controller
      */
     public function create()
     {
-        //
+        return view('motor.create');
     }
 
     /**
@@ -27,7 +41,34 @@ class MotorController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validate = $request->validate([
+            'motor_kode' => 'required',
+            'motor_merk' => 'required',
+            'motor_tipe' => 'required',
+            'motor_warna' => 'required',
+            'motor_tahun' => 'required',
+            'motor_harga' => 'required',
+            'motor_gambar' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+        ]);
+
+        $imagePath = null;
+        if ($request->hasFile('image')) {
+            $imagePath = $request->file('image')->store('uploads/motors', 'public');
+            $image = Image::read(public_path("storage/{$imagePath}"))->resize(800, 400);
+            $image->save();
+        }
+
+        Motor::create([
+            'motor_kode' => $validate['motor_kode'],
+            'motor_merk' => $validate['motor_merk'],
+            'motor_tipe' => $validate['motor_tipe'],
+            'motor_warna' => $validate['motor_warna'],
+            'motor_tahun' => $validate['motor_tahun'],
+            'motor_harga' => $validate['motor_harga'],
+            'motor_gambar' => $imagePath,
+        ]);
+
+        return redirect()->route('motor.index')->with('success', 'Motor berhasil ditambahkan');
     }
 
     /**
@@ -43,15 +84,38 @@ class MotorController extends Controller
      */
     public function edit(string $id)
     {
-        //
+        $motor = Motor::findOrFail($id);
+        return view('motor.edit', compact('motor'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, Motor $motor)
     {
-        //
+        $validate = $request->validate([
+            'motor_kode' => 'required',
+            'motor_merk' => 'required',
+            'motor_tipe' => 'required',
+            'motor_warna' => 'required',
+            'motor_tahun' => 'required',
+            'motor_harga' => 'required',
+            'motor_gambar' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+        ]);
+
+        if ($request->hasFile('image')) {
+            if ($motor->image) {
+                \Storage::delete("public/{$motor->image}");
+            }
+            $imagePath = $request->file('image')->store('uploads/moto$motors', 'public');
+            $image = Image::read(public_path("storage/{$imagePath}"))->resize(800, 400);
+            $image->save();
+            $validated['image'] = $imagePath;
+        }
+
+        $motor->update($validate);
+
+        return redirect()->route('motor.index')->with('success', 'Motor berhasil diubah');
     }
 
     /**
@@ -59,6 +123,11 @@ class MotorController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        $motor = Motor::findOrFail($id);
+        if ($motor->image) {
+            \Storage::delete("public/{$motor->image}");
+        }
+
+        return redirect()->route('motor.index')->with('success', 'Motor berhasil dihapus');
     }
 }

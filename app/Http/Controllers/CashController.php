@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Beli_cash;
 use Illuminate\Http\Request;
 
 class CashController extends Controller
@@ -9,9 +10,19 @@ class CashController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
+        $query = Beli_cash::query();
+
+        // Search
+        if ($request->filled('search')) {
+            $query->where('cash_kode', 'like', "%{$request->search}%");
+        }
+
+        // Pagination
+        $cash = $query->paginate(10);
+
+        return view('cash.index', compact('cash'));
     }
 
     /**
@@ -19,7 +30,7 @@ class CashController extends Controller
      */
     public function create()
     {
-        //
+        return view('cash.create');
     }
 
     /**
@@ -27,38 +38,78 @@ class CashController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'cash_kode' => 'required|unique:beli_cash,cash_kode',
+            'pembeli_ktp' => 'required',
+            'motor_kode' => 'required',
+            'cash_bayar' => 'required',
+            'cash_tanggal' => 'required',
+        ]);
+
+        $cash = new Beli_cash([
+            'cash_kode' => $request->cash_kode,
+            'pembeli_ktp' => $request->pembeli_ktp,
+            'motor_kode' => $request->motor_kode,
+            'cash_bayar' => $request->cash_bayar,
+            'cash_tanggal' => $request->cash_tanggal,            
+        ]);
+
+        $cash->save();
+
+        return redirect()->route('cash.index')->with('success', 'Cash entry created successfully.');
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show($id)
     {
-        //
+        $cash = Beli_cash::findOrFail($id);
+        return view('cash.show', compact('cash'));
     }
 
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit($id)
     {
-        //
+        $cash = Beli_cash::findOrFail($id);
+        return view('cash.edit', compact('cash'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, $id)
     {
-        //
+        $request->validate([
+            'cash_kode' => 'required|unique:beli_cash,cash_kode,' . $id,
+            'pembeli_ktp' => 'required',
+            'motor_kode' => 'required',
+            'cash_bayar' => 'required',
+            'cash_tanggal' => 'required',
+        ]);
+
+        $cash = Beli_cash::findOrFail($id);
+        $cash->cash_kode = $request->cash_kode;
+        $cash->pembeli_ktp = $request->pembeli_ktp;
+        $cash->motor_kode = $request->motor_kode;
+        $cash->cash_bayar = $request->cash_bayar;
+        $cash->cash_tanggal = $request->cash_tanggal;
+
+        $cash->save();
+
+        return redirect()->route('cash.index')->with('success', 'Cash entry updated successfully.');
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy($id)
     {
-        //
+        $cash = Beli_cash::findOrFail($id);
+        $cash->delete();
+
+        return redirect()->route('cash.index')->with('success', 'Cash entry deleted successfully.');
     }
 }
