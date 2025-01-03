@@ -17,9 +17,9 @@ class Beli_kredit extends Model
         'motor_kode',
         'paket_kode',
         'kredit_tanggal',
-        'foto_ktp',
-        'foto_kk',
-        'foto_slip_gaji',
+        'photo_ktp',
+        'photo_kk',
+        'photo_slip_gaji',
     ];
 
     public function motor()
