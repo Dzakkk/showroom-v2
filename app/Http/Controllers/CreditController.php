@@ -4,6 +4,9 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Beli_kredit;
+use Intervention\Image\ImageManager;
+use Intervention\Image\Drivers\Gd\Driver;
+use Intervention\Image\Laravel\Facades\Image;
 
 class CreditController extends Controller
 {
@@ -39,7 +42,30 @@ class CreditController extends Controller
             'photo_slip_gaji' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
         ]);
 
-        Beli_kredit::create($request->all());
+        $data = $request->all();
+
+        if ($request->hasFile('photo_ktp')) {
+            $imageKTP = $request->file('photo_ktp')->store('uploads/ktp', 'public');
+            $image = Image::make(public_path("storage/{$imageKTP}"))->resize(800, 400);
+            $image->save();
+            $data['photo_ktp'] = $imageKTP;
+        }
+
+        if ($request->hasFile('photo_kk')) {
+            $imageKK = $request->file('photo_kk')->store('uploads/kk', 'public');
+            $image = Image::make(public_path("storage/{$imageKK}"))->resize(800, 400);
+            $image->save();
+            $data['photo_kk'] = $imageKK;
+        }
+
+        if ($request->hasFile('photo_slip_gaji')) {
+            $imageSLIP = $request->file('photo_slip_gaji')->store('uploads/slip', 'public');
+            $image = Image::make(public_path("storage/{$imageSLIP}"))->resize(800, 400);
+            $image->save();
+            $data['photo_slip_gaji'] = $imageSLIP;
+        }
+
+        Beli_kredit::create($data);
 
         return redirect()->route('kredit.index')->with('success', 'Kredit entry created successfully.');
     }
@@ -68,7 +94,6 @@ class CreditController extends Controller
     public function update(Request $request, $id)
     {
         $request->validate([
-            'kredit_kode' => 'required|unique:kredit,kredit_kode',
             'pembeli_ktp' => 'required',
             'motor_kode' => 'required',
             'kredit_tanggal' => 'required|date',
@@ -78,7 +103,30 @@ class CreditController extends Controller
         ]);
 
         $kredit = Beli_kredit::findOrFail($id);
-        $kredit->update($request->all());
+        $data = $request->all();
+
+        if ($request->hasFile('photo_ktp')) {
+            $imageKTP = $request->file('photo_ktp')->store('uploads/ktp', 'public');
+            $image = Image::make(public_path("storage/{$imageKTP}"))->resize(800, 400);
+            $image->save();
+            $data['photo_ktp'] = $imageKTP;
+        }
+
+        if ($request->hasFile('photo_kk')) {
+            $imageKK = $request->file('photo_kk')->store('uploads/kk', 'public');
+            $image = Image::make(public_path("storage/{$imageKK}"))->resize(800, 400);
+            $image->save();
+            $data['photo_kk'] = $imageKK;
+        }
+
+        if ($request->hasFile('photo_slip_gaji')) {
+            $imageSLIP = $request->file('photo_slip_gaji')->store('uploads/slip', 'public');
+            $image = Image::make(public_path("storage/{$imageSLIP}"))->resize(800, 400);
+            $image->save();
+            $data['photo_slip_gaji'] = $imageSLIP;
+        }
+
+        $kredit->update($data);
 
         return redirect()->route('kredit.index')->with('success', 'Kredit entry updated successfully.');
     }
