@@ -9,7 +9,7 @@ class Kredit_paket extends Model
 {
     use HasFactory;
 
-    protected $table = 'pakets';
+    protected $table = 'paket';
     protected $primaryKey = 'paket_kode';
     protected $fillable = [
         'paket_kode',

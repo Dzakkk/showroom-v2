@@ -7,6 +7,8 @@ use App\Http\Controllers\CicilanController;
 use App\Http\Controllers\PembeliController;
 use App\Http\Controllers\CreditController;
 use App\Http\Controllers\MotorController;
+use App\Http\Controllers\PaketController;
+use App\Http\Controllers\PurchasingController;
 
 Route::get('/', function () {
     return view('layouts.home');
@@ -32,3 +34,6 @@ Route::resource('pembeli', PembeliController::class);
 
 // Credit routes
 Route::resource('kredit', CreditController::class);
+
+// Paket routes
+Route::resource('paket', PaketController::class);

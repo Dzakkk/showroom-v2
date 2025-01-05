@@ -27,6 +27,11 @@ class Beli_kredit extends Model
         return $this->belongsTo(Motor::class, 'motor_kode', 'motor_kode');
     }
 
+    public function paket()
+    {
+        return $this->belongsTo(Kredit_paket::class, 'paket_kode', 'paket_kode');
+    }
+
     public function pembeli()
     {
         return $this->belongsTo(Pembeli::class, 'pembeli_ktp', 'pembeli_ktp');

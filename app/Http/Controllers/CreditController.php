@@ -4,6 +4,9 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Beli_kredit;
+use App\Models\Kredit_paket;
+use App\Models\Motor;
+use App\Models\Pembeli;
 use Intervention\Image\ImageManager;
 use Intervention\Image\Drivers\Gd\Driver;
 use Intervention\Image\Laravel\Facades\Image;
@@ -15,8 +18,8 @@ class CreditController extends Controller
      */
     public function index()
     {
-        $kredit = Beli_kredit::paginate(10);
-        return view('kredit.index', compact('kredit'));
+        $kredit = Beli_kredit::with('motor', 'paket', 'kredit', 'pembeli')->paginate(10);
+        return view('pages.kredit.index', compact('kredit'));
     }
 
     /**
@@ -24,7 +27,10 @@ class CreditController extends Controller
      */
     public function create()
     {
-        return view('kredit.create');
+        $paket = Kredit_paket::all();
+        $motor = Motor::all();
+        $pembeli = Pembeli::all();
+        return view('pages.kredit.create', compact('paket', 'motor', 'pembeli'));
     }
 
     /**
@@ -36,6 +42,7 @@ class CreditController extends Controller
             'kredit_kode' => 'required|unique:kredit,kredit_kode',
             'pembeli_ktp' => 'required',
             'motor_kode' => 'required',
+            'paket_kode' => 'required',
             'kredit_tanggal' => 'required|date',
             'photo_ktp' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
             'photo_kk' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
@@ -96,6 +103,7 @@ class CreditController extends Controller
         $request->validate([
             'pembeli_ktp' => 'required',
             'motor_kode' => 'required',
+            'paket_kode' => 'required',
             'kredit_tanggal' => 'required|date',
             'photo_ktp' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
             'photo_kk' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',

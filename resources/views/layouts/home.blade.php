@@ -89,6 +89,15 @@
                         @yield('pembeli-edit')
                         @yield('pembeli')
                     </div>
+                    <div class="container">
+                        @yield('kredit')
+                        @yield('kredit-create')
+                        @yield('kredit-edit')
+                    </div>
+                    <div class="container">
+                        @yield('paket')
+                        @yield('paket-create')
+                    </div>
                 </div>
             </div>
         </div>

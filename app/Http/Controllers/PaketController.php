@@ -12,7 +12,7 @@ class PaketController extends Controller
      */
     public function index(Request $request)
     {
-        $query = Kredit_paket::all();
+        $query = Kredit_paket::query();
 
         // Search
         if ($request->filled('search')) {
@@ -20,9 +20,9 @@ class PaketController extends Controller
         }
 
         // Pagination
-        $paket = $query->paginate(10);
+        $pakets = $query->paginate(10);
 
-        return view('paket.index', compact('paket'));
+        return view('pages.paket.index', compact('pakets'));
     }
 
     /**
@@ -30,7 +30,7 @@ class PaketController extends Controller
      */
     public function create()
     {
-        return view('paket.create');
+        return view('pages.paket.create');
     }
 
     /**
