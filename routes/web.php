@@ -6,9 +6,10 @@ use App\Http\Controllers\CashController;
 use App\Http\Controllers\CicilanController;
 use App\Http\Controllers\PembeliController;
 use App\Http\Controllers\CreditController;
+use App\Http\Controllers\MotorController;
 
 Route::get('/', function () {
-    return view('welcome');
+    return view('layouts.home');
 });
 
 // Auth routes
@@ -19,6 +20,9 @@ Route::post('register', [AuthController::class, 'register']);
 
 // Cash routes
 Route::resource('cash', CashController::class);
+
+// Motor routes
+Route::resource('motor', MotorController::class);
 
 // Cicilan routes
 Route::resource('cicilan', CicilanController::class);

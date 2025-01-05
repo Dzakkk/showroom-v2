@@ -9,7 +9,7 @@ class Pembeli extends Model
 {
     use HasFactory;
 
-    protected $table = 'pembelis';
+    protected $table = 'pembeli';
     protected $primaryKey = 'pembeli_ktp';
     protected $fillable = [
         'pembeli_ktp',

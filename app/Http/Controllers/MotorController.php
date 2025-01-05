@@ -15,7 +15,7 @@ class MotorController extends Controller
      */
     public function index(Request $request)
     {
-        $query = Motor::all();
+        $query = Motor::query();
 
         // Search
         if ($request->filled('search')) {
@@ -23,9 +23,9 @@ class MotorController extends Controller
         }
 
         // Pagination
-        $motor = $query->paginate(10);
-
-        return view('motor.index', compact('motor'));
+        $motors = $query->paginate(10);
+        // dd($motors);
+        return view('pages.motor.index', compact('motors'));
     }
 
     /**
@@ -33,7 +33,7 @@ class MotorController extends Controller
      */
     public function create()
     {
-        return view('motor.create');
+        return view('pages.motor.create');
     }
 
     /**
@@ -48,7 +48,7 @@ class MotorController extends Controller
             'motor_warna' => 'required',
             'motor_tahun' => 'required',
             'motor_harga' => 'required',
-            'motor_gambar' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+            'image' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
         ]);
 
         $imagePath = null;
@@ -76,7 +76,8 @@ class MotorController extends Controller
      */
     public function show(string $id)
     {
-        //
+        $motor = Motor::findOrFail($id);
+        return view('pages.motor.show', compact('motor'));
     }
 
     /**
@@ -85,7 +86,7 @@ class MotorController extends Controller
     public function edit(string $id)
     {
         $motor = Motor::findOrFail($id);
-        return view('motor.edit', compact('motor'));
+        return view('pages.motor.edit', compact('motor'));
     }
 
     /**
@@ -103,14 +104,14 @@ class MotorController extends Controller
             'motor_gambar' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
         ]);
 
-        if ($request->hasFile('image')) {
-            if ($motor->image) {
-                \Storage::delete("public/{$motor->image}");
+        if ($request->hasFile('motor_gambar')) {
+            if ($motor->motor_gambar) {
+                \Storage::delete("public/{$motor->motor_gambar}");
             }
-            $imagePath = $request->file('image')->store('uploads/moto$motors', 'public');
+            $imagePath = $request->file('motor_gambar')->store('uploads/motors', 'public');
             $image = Image::read(public_path("storage/{$imagePath}"))->resize(800, 400);
             $image->save();
-            $validated['image'] = $imagePath;
+            $validate['motor_gambar'] = $imagePath;
         }
 
         $motor->update($validate);
@@ -124,9 +125,11 @@ class MotorController extends Controller
     public function destroy(string $id)
     {
         $motor = Motor::findOrFail($id);
-        if ($motor->image) {
-            \Storage::delete("public/{$motor->image}");
+        if ($motor->motor_gambar) {
+            \Storage::delete("public/{$motor->motor_gambar}");
         }
+
+        $motor->delete();
 
         return redirect()->route('motor.index')->with('success', 'Motor berhasil dihapus');
     }

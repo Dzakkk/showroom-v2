@@ -12,8 +12,10 @@ class PembeliController extends Controller
      */
     public function index()
     {
-        $pembeli = Pembeli::paginate(10);
-        return view('pembeli.index', compact('pembeli'));
+        $pembelis = Pembeli::paginate(10);
+
+        // dd($pembelis);
+        return view('pages.pembeli.index', compact('pembelis'));
     }
 
     /**
@@ -21,7 +23,7 @@ class PembeliController extends Controller
      */
     public function create()
     {
-        return view('pembeli.create');
+        return view('pages.pembeli.create');
     }
 
     /**
@@ -30,8 +32,9 @@ class PembeliController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'pembeli_ktp' => 'required|unique:pembeli,ktp',
+            'pembeli_ktp' => 'required|unique:pembeli',
             'pembeli_alamat' => 'required|string',
+            'pembeli_nama' => 'required|string',
             'pembeli_telepon' => 'required|string|max:15',
             'pembeli_email' => 'required|email',
         ]);
@@ -56,22 +59,23 @@ class PembeliController extends Controller
     public function edit($id)
     {
         $pembeli = Pembeli::findOrFail($id);
-        return view('pembeli.edit', compact('pembeli'));
+        return view('pages.pembeli.edit', compact('pembeli'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, $pembeli_ktp)
     {
         $request->validate([
-            'pembeli_ktp' => 'required|unique:pembeli,ktp,' . $id,
+            'pembeli_ktp' => 'required|unique:pembeli,pembeli_ktp,' . $pembeli_ktp . ',pembeli_ktp',
             'pembeli_alamat' => 'required|string',
+            'pembeli_nama' => 'required|string',
             'pembeli_telepon' => 'required|string|max:15',
             'pembeli_email' => 'required|email',
         ]);
 
-        $pembeli = Pembeli::findOrFail($id);
+        $pembeli = Pembeli::where('pembeli_ktp', $pembeli_ktp)->firstOrFail();
         $pembeli->update($request->all());
 
         return redirect()->route('pembeli.index')->with('success', 'Pembeli entry updated successfully.');

@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('cash', function (Blueprint $table) {
             $table->string('cash_kode')->primary();
-            $table->string('pemebeli_ktp');
+            $table->string('pembeli_ktp');
             $table->string('motor_kode');
             $table->double('cash_bayar');
             $table->date('cash_tanggal');
