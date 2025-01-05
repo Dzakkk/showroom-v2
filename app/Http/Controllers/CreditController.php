@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Bayar_cicilan;
 use Illuminate\Http\Request;
 use App\Models\Beli_kredit;
 use App\Models\Kredit_paket;
@@ -73,6 +74,28 @@ class CreditController extends Controller
         }
 
         Beli_kredit::create($data);
+
+        $price = Motor::where('motor_kode', $request->motor_kode)->first()->motor_harga;
+
+        $paket = Kredit_paket::where('paket_kode', $request->paket_kode)->first();
+
+        $uang_muka = $price * ($paket->paket_uang_muka / 100);
+        $jumlah_cicilan = $paket->paket_jumlah_cicilan;
+        $bunga = $price * ($paket->paket_bunga / 100);
+        $nilai_cicilan = ($price - $uang_muka + $bunga) / $jumlah_cicilan;
+
+        $cicilan = new Bayar_cicilan([
+            'cicilan_kode' => Str::uuid()->toString(),
+            'kredit_kode' => $request->kredit_kode,
+            'cicilan_jumlah' => $nilai_cicilan,
+            'cicilan_tanggal' => now(),
+            'cicilan_ke' => 1,
+            'cicilan_sisa_ke' => $jumlah_cicilan - 1,
+            'cicilan_sisa_harga' => $price - $uang_muka + $bunga - $nilai_cicilan,
+        ]);
+    
+        $cicilan->save();
+
 
         return redirect()->route('kredit.index')->with('success', 'Kredit entry created successfully.');
     }
