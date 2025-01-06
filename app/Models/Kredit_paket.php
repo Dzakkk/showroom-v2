@@ -11,6 +11,8 @@ class Kredit_paket extends Model
 
     protected $table = 'paket';
     protected $primaryKey = 'paket_kode';
+    public $incrementing = false; // Add this line
+    protected $keyType = 'string';
     protected $fillable = [
         'paket_kode',
         'paket_nama',

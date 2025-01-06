@@ -11,6 +11,7 @@ use App\Models\Pembeli;
 use Intervention\Image\ImageManager;
 use Intervention\Image\Drivers\Gd\Driver;
 use Intervention\Image\Laravel\Facades\Image;
+use Illuminate\Support\Str;
 
 class CreditController extends Controller
 {
@@ -19,7 +20,7 @@ class CreditController extends Controller
      */
     public function index()
     {
-        $kredit = Beli_kredit::with('motor', 'paket', 'kredit', 'pembeli')->paginate(10);
+        $kredit = Beli_kredit::with('motor', 'paket', 'pembeli')->paginate(10);
         return view('pages.kredit.index', compact('kredit'));
     }
 
@@ -28,9 +29,9 @@ class CreditController extends Controller
      */
     public function create()
     {
-        $paket = Kredit_paket::all();
         $motor = Motor::all();
         $pembeli = Pembeli::all();
+        $paket = Kredit_paket::all();
         return view('pages.kredit.create', compact('paket', 'motor', 'pembeli'));
     }
 
@@ -54,38 +55,37 @@ class CreditController extends Controller
 
         if ($request->hasFile('photo_ktp')) {
             $imageKTP = $request->file('photo_ktp')->store('uploads/ktp', 'public');
-            $image = Image::make(public_path("storage/{$imageKTP}"))->resize(800, 400);
+            $image = Image::read(public_path("storage/{$imageKTP}"))->resize(800, 400);
             $image->save();
             $data['photo_ktp'] = $imageKTP;
         }
 
         if ($request->hasFile('photo_kk')) {
             $imageKK = $request->file('photo_kk')->store('uploads/kk', 'public');
-            $image = Image::make(public_path("storage/{$imageKK}"))->resize(800, 400);
+            $image = Image::read(public_path("storage/{$imageKK}"))->resize(800, 400);
             $image->save();
             $data['photo_kk'] = $imageKK;
         }
 
         if ($request->hasFile('photo_slip_gaji')) {
             $imageSLIP = $request->file('photo_slip_gaji')->store('uploads/slip', 'public');
-            $image = Image::make(public_path("storage/{$imageSLIP}"))->resize(800, 400);
+            $image = Image::read(public_path("storage/{$imageSLIP}"))->resize(800, 400);
             $image->save();
             $data['photo_slip_gaji'] = $imageSLIP;
         }
 
-        Beli_kredit::create($data);
 
         $price = Motor::where('motor_kode', $request->motor_kode)->first()->motor_harga;
 
         $paket = Kredit_paket::where('paket_kode', $request->paket_kode)->first();
-
+        // dd($paket, $price, $data);
         $uang_muka = $price * ($paket->paket_uang_muka / 100);
         $jumlah_cicilan = $paket->paket_jumlah_cicilan;
         $bunga = $price * ($paket->paket_bunga / 100);
         $nilai_cicilan = ($price - $uang_muka + $bunga) / $jumlah_cicilan;
 
         $cicilan = new Bayar_cicilan([
-            'cicilan_kode' => Str::uuid()->toString(),
+            'cicilan_kode' => 'CIC-' . strtoupper(Str::random(8)),
             'kredit_kode' => $request->kredit_kode,
             'cicilan_jumlah' => $nilai_cicilan,
             'cicilan_tanggal' => now(),
@@ -93,7 +93,9 @@ class CreditController extends Controller
             'cicilan_sisa_ke' => $jumlah_cicilan - 1,
             'cicilan_sisa_harga' => $price - $uang_muka + $bunga - $nilai_cicilan,
         ]);
-    
+
+        Beli_kredit::create($data);
+
         $cicilan->save();
 
 

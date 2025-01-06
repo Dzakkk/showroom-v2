@@ -11,6 +11,8 @@ class Motor extends Model
 
     protected $table = 'motors';
     protected $primaryKey = 'motor_kode';
+    public $incrementing = false; // Add this line
+    protected $keyType = 'string';
     protected $fillable = [
         'motor_kode',
         'motor_merk',

@@ -11,6 +11,9 @@ class Beli_kredit extends Model
 
     protected $table = 'kredit';
     protected $primaryKey = 'kredit_kode';
+    public $incrementing = false; // Add this line
+    protected $keyType = 'string';
+    
     protected $fillable = [
         'kredit_kode',
         'pembeli_ktp',

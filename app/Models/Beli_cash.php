@@ -11,6 +11,8 @@ class Beli_cash extends Model
 
     protected $table = 'cash';
     protected $primaryKey = 'cash_kode';
+    public $incrementing = false; // Add this line
+    protected $keyType = 'string';
     protected $fillable = [
         'cash_kode',
         'pembeli_ktp',

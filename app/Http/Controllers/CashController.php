@@ -3,6 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Beli_cash;
+use App\Models\Kredit_paket;
+use App\Models\Motor;
+use App\Models\Pembeli;
 use Illuminate\Http\Request;
 
 class CashController extends Controller
@@ -20,9 +23,9 @@ class CashController extends Controller
         }
 
         // Pagination
-        $cash = $query->paginate(10);
+        $cashs = $query->paginate(10);
 
-        return view('cash.index', compact('cash'));
+        return view('pages.cash.index', compact('cashs'));
     }
 
     /**
@@ -30,7 +33,10 @@ class CashController extends Controller
      */
     public function create()
     {
-        return view('cash.create');
+        $pembeli = Pembeli::all();
+        $motor = Motor::all();
+
+        return view('pages.cash.create', compact('pembeli', 'motor'));
     }
 
     /**

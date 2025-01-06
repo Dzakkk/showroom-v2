@@ -21,7 +21,7 @@ class PaketController extends Controller
 
         // Pagination
         $pakets = $query->paginate(10);
-
+        // dd($pakets);
         return view('pages.paket.index', compact('pakets'));
     }
 

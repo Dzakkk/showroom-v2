@@ -11,6 +11,8 @@ class Pembeli extends Model
 
     protected $table = 'pembeli';
     protected $primaryKey = 'pembeli_ktp';
+    public $incrementing = false; // Add this line
+    protected $keyType = 'string';
     protected $fillable = [
         'pembeli_ktp',
         'pembeli_nama',

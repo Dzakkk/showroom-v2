@@ -11,6 +11,8 @@ class Bayar_cicilan extends Model
 
     protected $table = 'cicilan';
     protected $primaryKey = 'cicilan_kode';
+    public $incrementing = false; // Add this line
+    protected $keyType = 'string';
     protected $fillable = [
         'cicilan_kode',
         'kredit_kode',

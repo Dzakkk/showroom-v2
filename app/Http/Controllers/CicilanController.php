@@ -12,8 +12,8 @@ class CicilanController extends Controller
      */
     public function index()
     {
-        $cicilan = Bayar_cicilan::paginate(10);
-        return view('cicilan.index', compact('cicilan'));
+        $cicilans = Bayar_cicilan::paginate(10);
+        return view('pages.cicilan.index', compact('cicilans'));
     }
 
     /**
@@ -30,7 +30,7 @@ class CicilanController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'cicilan_kode' => 'required|unique:cicilan,cicilan_kode',
+            'cicilan_kode' => 'required|unique:cicilan',
             'kredit_kode' => 'required',
             'cicilan_jumlah' => 'required|numeric',
             'cicilan_tanggal' => 'required|date',
@@ -63,25 +63,25 @@ class CicilanController extends Controller
     }
 
     /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, $id)
-    {
-        $request->validate([
-            'cicilan_kode' => 'required|unique:cicilan,cicilan_kode,' . $id,
-            'kredit_kode' => 'required',
-            'cicilan_jumlah' => 'required|numeric',
-            'cicilan_tanggal' => 'required|date',
-            'cicilan_ke' => 'required|integer',
-            'cicilan_sisa_ke' => 'required|integer',
-            'cicilan_sisa_harga' => 'required|numeric',
-        ]);
+ * Update the specified resource in storage.
+ */
+public function update(Request $request, $id)
+{
+    // $request->validate([
+    //     'cicilan_jumlah' => 'required|numeric', // Pastikan cicilan_jumlah selalu disediakan
+    // ]);
 
-        $cicilan = Bayar_cicilan::findOrFail($id);
-        $cicilan->update($request->all());
+    $cicilan = Bayar_cicilan::findOrFail($id);
 
-        return redirect()->route('cicilan.index')->with('success', 'Cicilan entry updated successfully.');
-    }
+    $cicilan->cicilan_ke += 1;
+    $cicilan->cicilan_sisa_ke -= 1;
+    $cicilan->cicilan_tanggal = \Carbon\Carbon::parse($cicilan->cicilan_tanggal)->addDays(30);
+    $cicilan->cicilan_sisa_harga -= $cicilan->cicilan_jumlah;
+    $cicilan->save();
+
+    return redirect()->route('cicilan.index')->with('success', 'Cicilan updated successfully.');
+}
+
 
     /**
      * Remove the specified resource from storage.

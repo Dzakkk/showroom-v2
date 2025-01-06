@@ -26,10 +26,10 @@
             </select>
         </div>
         <div class="mb-3">
-            <label for="motor_kode" class="form-label">Paket Kode</label>
-            <select class="form-control" id="motor_kode" name="motor_kode" required>
+            <label for="paket_kode" class="form-label">Paket Kode</label>
+            <select class="form-control" id="paket_kode" name="paket_kode" required>
                 @foreach($paket as $item)
-                    <option value="{{ $item->paket_kode }}">{{ $item->paket_bunga }} - {{ $item->paket_nama }}</option>
+                    <option value="{{ $item->paket_kode }}">{{ $item->paket_bunga }} - {{ $item->paket_nama }} : {{ $item->paket_kode }}</option>
                 @endforeach
             </select>
         </div>
