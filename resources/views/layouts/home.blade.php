@@ -75,9 +75,9 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item">
-                        <a class="nav-link {{ request()->is('/') ? 'active' : '' }}" href="{{ url('/') }}">Home</a>
+                        <a class="nav-link {{ request()->is('/dashboard') ? 'active' : '' }}" href="{{ url('/dashboard') }}">Home</a>
                     </li>
-                    <li class="nav-item">
+                    {{-- <li class="nav-item">
                         <a class="nav-link {{ request()->is('motor*') ? 'active' : '' }}"
                             href="{{ route('motor.index') }}">Motor</a>
                     </li>
@@ -100,7 +100,7 @@
                     <li class="nav-item">
                         <a class="nav-link {{ request()->is('cicilan*') ? 'active' : '' }}"
                             href="{{ route('cicilan.index') }}">Cicilan</a>
-                    </li>
+                    </li> --}}
                 </ul>
             </div>
         </div>
@@ -163,6 +163,9 @@
                 <div class="container">
                     @yield('cash')
                     @yield('cash-create')
+                </div>
+                <div class="container">
+                    @yield('home')
                 </div>
             </div>
         </div>

@@ -1,4 +1,3 @@
-<!-- filepath: /d:/laragon/www/showroom-v2/resources/views/pages/auth/login.blade.php -->
 <!DOCTYPE html>
 <html lang="en">
 <head>

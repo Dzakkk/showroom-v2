@@ -2,6 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Beli_cash;
+use App\Models\Beli_kredit;
+use App\Models\Motor;
+use App\Models\Pembeli;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -73,4 +77,15 @@ class AuthController extends Controller
 
         return redirect('/login');
     }
+
+    public function dashboard()
+{
+    $pembeli = Pembeli::count();      // Hitung jumlah pembeli
+    $motor = Motor::count();          // Hitung jumlah motor
+    $kredit = Beli_kredit::count();   // Hitung jumlah beli kredit
+    $cash = Beli_cash::count();       // Hitung jumlah beli cash
+
+    return view('pages.index', compact('pembeli', 'motor', 'kredit', 'cash'));
+}
+
 }

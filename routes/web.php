@@ -10,9 +10,9 @@ use App\Http\Controllers\MotorController;
 use App\Http\Controllers\PaketController;
 use App\Http\Controllers\PurchasingController;
 
-Route::get('/', function () {
-    return view('layouts.home');
-});
+// Route::get('/dashboard', function () {
+//     return view('layouts.home');
+// });
 
 // Auth routes
 Route::get('login', [AuthController::class, 'showLoginForm'])->name('login');
@@ -20,6 +20,7 @@ Route::post('login', [AuthController::class, 'login']);
 Route::get('register', [AuthController::class, 'showRegistrationForm'])->name('register');
 Route::post('register', [AuthController::class, 'register']);
 
+Route::get('dashboard', [AuthController::class, 'dashboard'])->name('dashboard');
 // Cash routes
 Route::resource('cash', CashController::class);
 
