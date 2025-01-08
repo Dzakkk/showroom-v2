@@ -45,7 +45,7 @@ class CashController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'cash_kode' => 'required|unique:beli_cash,cash_kode',
+            'cash_kode' => 'required|unique:cash,cash_kode',
             'pembeli_ktp' => 'required',
             'motor_kode' => 'required',
             'cash_bayar' => 'required',
@@ -89,7 +89,7 @@ class CashController extends Controller
     public function update(Request $request, $id)
     {
         $request->validate([
-            'cash_kode' => 'required|unique:beli_cash,cash_kode,' . $id,
+            'cash_kode' => 'required|unique:cash,cash_kode,' . $id,
             'pembeli_ktp' => 'required',
             'motor_kode' => 'required',
             'cash_bayar' => 'required',
